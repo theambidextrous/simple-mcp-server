@@ -71,28 +71,35 @@ main().catch(err => {
 });
 
 async function handleToolExecution(tool: Tool) {
-    const args: Record<string, string> = {}
-    for (const [key, value] of Object.entries(
-        tool.inputSchema.properties ?? {}
-    )) {
-        if (typeof value === "string") {
-             args[key] = await input({
-                message: `Enter value for ${key} (${(value as { type: string }).type}):`,
-            })
-        }
-        if (typeof value === "object" && value !== null) {
-            // Handle nested object input
-            const nestedArgs: Record<string, string> = {}
-            for (const [nestedKey, nestedValue] of Object.entries(
-                (value as { properties: Record<string, any> }).properties ?? {}
-            )) {
-                nestedArgs[nestedKey] = await input({
-                    message: `Enter value for ${key}.${nestedKey} (${(nestedValue as { type: string }).type}):`,
-                })
+    const collectArguments = async (
+        properties: Record<string, unknown>,
+        parentPath = "",
+    ): Promise<Record<string, unknown>> => {
+        const args: Record<string, unknown> = {};
+
+        for (const [key, schema] of Object.entries(properties)) {
+            const path = parentPath ? `${parentPath}.${key}` : key;
+            const propertySchema = schema as {
+                type?: string;
+                properties?: Record<string, unknown>;
+            };
+
+            if (propertySchema.type === "object") {
+                args[key] = await collectArguments(
+                    propertySchema.properties ?? {},
+                    path,
+                );
+            } else {
+                args[key] = await input({
+                    message: `Enter value for ${path} (${propertySchema.type ?? "string"}):`,
+                });
             }
-            args[key] = JSON.stringify(nestedArgs)
         }
-    }
+
+        return args;
+    };
+
+    const args = await collectArguments(tool.inputSchema.properties ?? {});
 
     const res = await client.callTool({
         name: tool.name,

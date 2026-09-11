@@ -14,7 +14,8 @@
     "server:build:watch": "tsc --watch",
     "server:dev": "tsx src/server.ts",
     "server:inspect": "set DANGEROUSLY_OMIT_AUTH=true && npx @modelcontextprotocol/inspector npm run server:dev",
-    "client:dev": "tsx src/client.ts"
+    "client:dev": "tsx src/client.ts",
+    "old:client:dev": "tsx src/old.client.ts"
   },
   "devDependencies": {
     "@modelcontextprotocol/inspector": "2.6.0",
