@@ -1,0 +1,33 @@
+{
+  "name": "mcp-simple-app",
+  "version": "1.0.0",
+  "description": "simple mcp server that providers resources, tools and prompts",
+  "keywords": [
+    "mcp"
+  ],
+  "license": "ISC",
+  "author": "juma idd otuya",
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "server:build": "tsc",
+    "server:build:watch": "tsc --watch",
+    "server:dev": "tsx src/server.ts",
+    "server:inspect": "set DANGEROUSLY_OMIT_AUTH=true && npx @modelcontextprotocol/inspector npm run server:dev",
+    "client:dev": "tsx src/client.ts"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/inspector": "2.6.0",
+    "@types/node": "^22.20.2",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "4.0.67",
+    "@inquirer/prompts": "8.7.2",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "ai": "7.0.97",
+    "dotenv": "17.4.2",
+    "zod": "4.6.2"
+  }
+}
